@@ -26,6 +26,8 @@ module Cielo
   mattr_accessor :chave_acesso
   @@return_path = "http://localhost:3000"
   mattr_accessor :return_path
+  @@cert_file = ""
+  mattr_accessor :cert_file
 
   def self.setup
     yield self

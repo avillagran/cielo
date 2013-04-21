@@ -92,7 +92,7 @@ module Cielo
     end
     
     def make_request!(message)
-      params = { :mensagem => message.target!.gsub("<to_str/><to_str/>", ""), cert: '/Users/avillagran/Desarrollo/Web/KaiZen10/KaiZen10Web/VeriSignClass3PublicPrimaryCertificationAuthority-G5.crt' }
+      params = { :mensagem => message.target!.gsub("<to_str/><to_str/>", ""), cert: Cielo.cert_file }
       
       result = @connection.request! params
       

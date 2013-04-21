@@ -1,6 +1,7 @@
 = cielo
 
 Integração com a Cielo via WebServices
+[AV: 2013-04-21]
 
 == Funcionalidades Implementadas
 
@@ -34,6 +35,7 @@ Se torna necessário somente configurar o módulo Cielo
     config.numero_afiliacao = "XXX" # fornecido pela cielo
     config.chave_acesso = "XXX" # fornecido pela cielo
     config.return_path = "http://path/to" # URL para onde a cielo redirecionara seu usuário após inserir os dados na cielo.
+    config.cert_file = "/path/to/certificate.crt"
   end
 
 == Avisos
