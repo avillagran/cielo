@@ -19,7 +19,7 @@ module Cielo
         end
         xml.tag!("dados-pedido") do
           [:numero, :valor, :moeda, :"data-hora", :descricao, :idioma, :"soft-descriptor"].each do |key|
-            xml.tag!(key.to_s, parameters[key].to_s)
+            xml.tag!(key.to_s, parameters[key].to_s) unless parameters[key].blank?
           end
         end
         xml.tag!("forma-pagamento") do
@@ -30,9 +30,10 @@ module Cielo
         xml.tag!("url-retorno", parameters[:"url-retorno"]).to_s if parameters[:"url-retorno"]
         xml.autorizar parameters[:autorizar].to_s
         xml.capturar parameters[:capturar].to_s
-        xml.tag!("campo-livre", parameters[:"campo-livre"]).to_s if parameters[:"campo-livre"]
+        xml.tag!("campo-livre", parameters[:"campo-livre"]).to_s unless parameters[:"campo-livre"].blank?
         xml.tag!("bin", parameters[:bin]).to_s if parameters[:bin]
       end
+      logger.info message
       make_request! message
     end
     
@@ -41,7 +42,7 @@ module Cielo
       message = xml_builder("requisicao-consulta", :before) do |xml|
         xml.tid "#{cielo_tid}"
       end
-      
+      logger.info message
       make_request! message
     end
     
@@ -50,6 +51,7 @@ module Cielo
       message = xml_builder("requisicao-captura", :before) do |xml|
         xml.tid "#{cielo_tid}"
       end
+      logger.info message
       make_request! message
     end
     
@@ -90,7 +92,7 @@ module Cielo
     end
     
     def make_request!(message)
-      params = { :mensagem => message.target! }
+      params = { :mensagem => message.target!.gsub("<to_str/><to_str/>", ""), cert: '/Users/avillagran/Desarrollo/Web/KaiZen10/KaiZen10Web/VeriSignClass3PublicPrimaryCertificationAuthority-G5.crt' }
       
       result = @connection.request! params
       
@@ -98,7 +100,9 @@ module Cielo
     end
     
     def parse_response(response)
-      if ["100 Continue"].include?(response.status)
+      logger.info "Status: #{response.status}"
+      logger.info "Body: #{response.body_str.bold}" if response
+      if ["200 OK"].include?(response.status)
         document = REXML::Document.new(response.body_str)
         parse_elements(document.elements)
       else
