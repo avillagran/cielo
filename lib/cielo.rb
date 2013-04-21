@@ -11,11 +11,13 @@ require "builder"
 module Cielo
 
   class Production
-    API_URL = "https://ecommerce.cielo.com.br:443/servicos/ecommwsec.do"
+    BASE_URL = "ecommerce.cbmp.com.br"
+    WS_PATH = "/servicos/ecommwsec.do"
   end
 
   class Test
-    API_URL = "https://qasecommerce.cielo.com.br:443/servicos/ecommwsec.do"
+    BASE_URL = "qasecommerce.cielo.com.br"
+    WS_PATH = "/servicos/ecommwsec.do"
   end
   
   @@environment = :test

@@ -92,7 +92,7 @@ module Cielo
     end
     
     def make_request!(message)
-      params = { :mensagem => message.target!.gsub("<to_str/><to_str/>", ""), cert: Cielo.cert_file }
+      params = { :mensagem => message.target!.gsub("<to_str/><to_str/>", "") }
       
       result = @connection.request! params
       
@@ -100,10 +100,11 @@ module Cielo
     end
     
     def parse_response(response)
-      logger.info "Status: #{response.status}"
-      logger.info "Body: #{response.body_str.bold}" if response
-      if ["200 OK"].include?(response.status)
-        document = REXML::Document.new(response.body_str)
+
+      logger.info "Body: #{response.body}" if response
+      case response
+      when Net::HTTPSuccess
+        document = REXML::Document.new(response.body)
         parse_elements(document.elements)
       else
         {:erro => { :codigo => "000", :mensagem => "Impossível contactar o servidor"}}
